@@ -1,0 +1,15 @@
+target/
+.idea/
+*.iml
+nbactions.xml
+**/.DS_Store
+**/branchdelete
+
+**/node_modules/*
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+/src/storefront/theme/
+/branchdelete
