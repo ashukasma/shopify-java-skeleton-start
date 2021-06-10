@@ -5,6 +5,7 @@ import com.lucent.skeleton.service.CustomStoreUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,7 +23,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    private ShopifyJwtTokenProvider tokenProvider;
 
     @Autowired
     private CustomStoreUserDetailsService customStoreUserDetailsService;
@@ -30,21 +31,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain fc) throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(httpServletRequest);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromJwtToken(jwt);
-                StoreUser storeUser = customStoreUserDetailsService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        storeUser, null, Collections.emptyList());
+            String jwtToken = getJwtFromRequest(httpServletRequest);
 
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+            String username = tokenProvider.getShopDomain(jwtToken);
+            // Once we get the token validate it.
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = customStoreUserDetailsService.loadUserByUsername(username);
+                // if token is valid configure Spring Security to manually set
+                if (tokenProvider.validateToken(jwtToken, userDetails)) {
+                    setAuthentication(httpServletRequest, userDetails);
+                }
             }
         } catch (Exception e) {
-            logger.error("JwtAuthenticationFilter : ", e);
+
         }
         fc.doFilter(httpServletRequest, httpServletResponse);
+    }
+
+    private void setAuthentication(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
     private String getJwtFromRequest(HttpServletRequest httpServletRequest) {
@@ -54,5 +61,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }

@@ -19,6 +19,6 @@ export const introTourMaxSteps = 1;
 export const shopifyApiKey = "6288ef4b0a766d95f5de14530a7d6c4d";
 
 // export const ApiUrl = "";
-export const ApiUrl = "http://localhost:5000";
-// export const ApiUrl = "https://ee8fda440846.ngrok.io";
+// export const ApiUrl = "http://localhost:5000";
+export const ApiUrl = "https://51e98ac61241.ngrok.io";
 // export const ApiUrl = "https://wachatshareapi.spaceorange.co";

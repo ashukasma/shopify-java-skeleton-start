@@ -13,7 +13,7 @@ import com.lucent.skeleton.entities.StoreDetails;
 import com.lucent.skeleton.entities.StoreUser;
 import com.lucent.skeleton.repository.StoreDetailsRepository;
 import com.lucent.skeleton.repository.StorePlanRepository;
-import com.lucent.skeleton.security.JwtTokenProvider;
+import com.lucent.skeleton.security.ShopifyJwtTokenProvider;
 import com.lucent.skeleton.security.SecurityConstants;
 import com.lucent.skeleton.service.background.StoreInstallationService;
 import com.lucent.skeleton.service.shopify.ShopifyScriptTagService;
@@ -57,7 +57,7 @@ public class StoreService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private ShopifyJwtTokenProvider jwtTokenProvider;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -145,16 +145,16 @@ public class StoreService {
                     storeUser.setPassword(password);
                     customStoreUserDetailsService.saveUser(storeUser);
                 }
-                Authentication authentication = authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(shop, token)
-                );
+//                Authentication authentication = authenticationManager.authenticate(
+//                        new UsernamePasswordAuthenticationToken(shop, token)
+//                );
+//
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                String jwtString = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
+//                String jwtString = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
                 loginResponseDTO.setMessage("Thank you for login");
                 loginResponseDTO.setSuccess(true);
-                loginResponseDTO.setToken(jwtString);
+//                loginResponseDTO.setToken(jwtString);
 
             } else {
                 logger.info("Access Token Failed");

@@ -5,6 +5,7 @@ import com.lucent.skeleton.repository.StoreDetailsRepository;
 import com.lucent.skeleton.service.StoreService;
 import com.lucent.skeleton.service.shopify.ShopifyDiscountService;
 import com.lucent.skeleton.service.shopify.ShopifyScriptTagService;
+import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,18 @@ public class TestController {
     @GetMapping("/pp")
     public String test(@RequestParam(name = "name") String name) {
 
+//        OkHttpClient client = new OkHttpClient().newBuilder().build();
+
         return storeService.updateStoreData().toString();
 //        String template = "Hi *${customerName}*, thank you for your purchase of *${totalPrice}* from *${storeName}*. Your order is getting ready and we will notify you when it has been shipped. You can view your order here *${orderUrl}* - *${storeUrl}*. Please find discount code {discount_10_percentage}";
 //        StoreDetails storeDetails = storeDetailsRepository.findByMyShopfiyUrl("whats-crm-1.myshopify.com");
 //        return updateDiscountString(storeDetails, template);
+
+//        Request.Post("http://www.example.com/page.php")
+//                .bodyForm(Form.form().add("id", "10").build())
+//                .execute()
+//                .returnContent();
+
+
     }
 }

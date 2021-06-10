@@ -1,30 +1,73 @@
 import React, { Component } from 'react'
 import { Provider, Context } from '@shopify/app-bridge-react';
 import { TitleBar, Button, Redirect } from '@shopify/app-bridge/actions';
+import { Card, DisplayText, Layout, Page, SkeletonBodyText, SkeletonDisplayText } from '@shopify/polaris';
 
 
 export default class Dashboard extends Component {
+    constructor() {
+        super();
+        this.state = {
+            loading: true
+        }
+    }
     static contextType = Context;
-
 
     render() {
         const app = this.context;
         app.getState().then(state => console.log(state));
-        const breadcrumb = Button.create(app, { label: 'My breadcrumb' });
-        breadcrumb.subscribe(Button.Action.CLICK, () => {
-            app.dispatch(Redirect.toApp({ path: '/breadcrumb-link' }));
-        });
 
         const titleBarOptions = {
-            title: 'My page title',
-            breadcrumbs: breadcrumb
+            title: 'Dashboard'
         };
+
+        let { loading } = this.state;
 
         const myTitleBar = TitleBar.create(app, titleBarOptions);
         return (
-            <div>
-
-            </div>
+            <Page
+                fullWidth="true"
+                title="Dashboard"
+                subtitle="Analytics">
+                <Layout>
+                    <Layout.Section oneThird>
+                        <Card
+                            title={<DisplayText size="small">Total </DisplayText>}>
+                            <Card.Section>
+                                {loading ? (
+                                    <SkeletonBodyText />
+                                ) : (
+                                    <DisplayText size="extraLarge">{11}</DisplayText>
+                                )}
+                            </Card.Section>
+                        </Card>
+                    </Layout.Section>
+                    <Layout.Section oneThird>
+                        <Card
+                            title={<DisplayText size="small">Average </DisplayText>}>
+                            <Card.Section>
+                                {loading ? (
+                                    <SkeletonBodyText />
+                                ) : (
+                                    <DisplayText size="extraLarge">{11}</DisplayText>
+                                )}
+                            </Card.Section>
+                        </Card>
+                    </Layout.Section>
+                    <Layout.Section oneThird>
+                        <Card
+                            title={<DisplayText size="small">Count </DisplayText>}>
+                            <Card.Section>
+                                {loading ? (
+                                    <SkeletonBodyText />
+                                ) : (
+                                    <DisplayText size="extraLarge">{11}</DisplayText>
+                                )}
+                            </Card.Section>
+                        </Card>
+                    </Layout.Section>
+                </Layout>
+            </Page>
         )
     }
 }

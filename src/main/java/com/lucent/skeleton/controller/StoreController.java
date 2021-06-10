@@ -4,7 +4,13 @@ import com.lucent.skeleton.dto.RestApiResponse;
 import com.lucent.skeleton.service.StoreService;
 import com.lucent.skeleton.service.shopify.ShopifyBillingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @CrossOrigin
 @RestController
@@ -28,9 +34,10 @@ public class StoreController {
         return shopifyBillingService.enableRecurringCharges(store_id, "New Updated Plan", max_charge);
     }
 
-    @RequestMapping("/store/{myShopifyUrl}")
+    @RequestMapping("/store")
     @ResponseBody
-    public RestApiResponse shopifyStoreDetails(@PathVariable String myShopifyUrl) {
+    public RestApiResponse shopifyStoreDetails(Principal principal) {
+        String myShopifyUrl = principal.getName();
         return storeService.findStoreByMyShopifyUrl(myShopifyUrl);
     }
 

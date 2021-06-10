@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
-import { ApiUrl } from '../Constants';
+import { ApiUrl, shopifyApiKey } from '../Constants';
+import { Provider, Context } from '@shopify/app-bridge-react';
+import createApp from '@shopify/app-bridge';
+import { Redirect } from '@shopify/app-bridge/actions';
+import { SkeletonPage } from '@shopify/polaris';
 
 export default class StoreInstall extends Component {
+    static contextType = Context;
     componentDidMount() {
-
+        // debugger;
         let server_redirect_url = ApiUrl + "/store_install" + window.location.search;
-        window.location.assign(server_redirect_url);
-        //     // If the current window is the 'child', change the parent's URL with Shopify App Bridge's Redirect action
-        // } else {
-        //     // var app = createApp({
-        //     //     apiKey: apiKey,
-        //     //     shopOrigin: shopOrigin
-        //     // });
-
-        //     // Redirect.create(app).dispatch(Redirect.Action.REMOTE, permissionUrl);
-        // }
+        const app = this.context;
+        let redirect = Redirect.create(app);
+        redirect.dispatch(Redirect.Action.REMOTE, server_redirect_url);
     }
     render() {
         return (
             <div>
+                <SkeletonPage>
 
+                </SkeletonPage>
             </div>
         )
     }

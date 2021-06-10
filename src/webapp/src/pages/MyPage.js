@@ -1,12 +1,10 @@
 import { Page } from '@shopify/polaris'
 import React, { Component } from 'react'
 
-export default class LoginFailed extends Component {
+export default class MyPage extends Component {
     render() {
-        debugger;
         return (
             <Page>
-                Please Reopen the app
             </Page>
         )
     }

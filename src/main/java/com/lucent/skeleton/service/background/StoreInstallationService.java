@@ -47,9 +47,6 @@ public class StoreInstallationService extends Thread {
                     StorePlanDetails storePlanDetails = StorePlanDetails.build(storeDetails, shopifyConfigReader.getMax_charge());
                     storePlanRepository.save(storePlanDetails);
                 }
-//                logger.info("StoreInstallationService - installScriptTag");
-//                shopifyScriptTagService.installScriptTag(storeDetails.getId());
-
                 logger.info("StoreInstallationService - createWebhooks");
                 shopifyWebhookService.createWebhooks(storeDetails.getId());
             }
