@@ -4,15 +4,24 @@ import { Provider, Context } from '@shopify/app-bridge-react';
 import createApp from '@shopify/app-bridge';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { SkeletonPage } from '@shopify/polaris';
+import isEmpty from 'is-empty';
 
 export default class StoreInstall extends Component {
     static contextType = Context;
     componentDidMount() {
-        // debugger;
-        let server_redirect_url = ApiUrl + "/store_install" + window.location.search;
         const app = this.context;
-        let redirect = Redirect.create(app);
-        redirect.dispatch(Redirect.Action.REMOTE, server_redirect_url);
+        const params = new URLSearchParams(window.location.search)
+        let shopOrigin = params.get('host');
+        if (isEmpty(shopOrigin)) {
+            const redirect = Redirect.create(app);
+            redirect.dispatch(Redirect.Action.APP, "/dashboard");
+        }
+        else {
+            // debugger;
+            let server_redirect_url = ApiUrl + "/store_install" + window.location.search;
+            let redirect = Redirect.create(app);
+            redirect.dispatch(Redirect.Action.REMOTE, server_redirect_url);
+        }
     }
     render() {
         return (

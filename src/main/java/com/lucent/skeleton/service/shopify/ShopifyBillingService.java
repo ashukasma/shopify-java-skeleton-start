@@ -85,7 +85,7 @@ public class ShopifyBillingService {
         try {
             System.out.println("enableRecurringCharges");
             logger.info("enableRecurringCharges 1" + myShopifyUrl);
-            return this.enableRecurringCharges(myShopifyUrl, "Starter Plan", 0.0, shopifyConfigReader.getMax_charge(), "Charges ($0.01/ Message) will be based on each message (160 characters) sent. ");
+            return this.enableRecurringCharges(myShopifyUrl, shopifyConfigReader.getPlan_name(), 0.0, shopifyConfigReader.getMax_charge(), shopifyConfigReader.getTerms());
         }
         catch(Exception ex){
             System.out.println(ex);
@@ -96,7 +96,7 @@ public class ShopifyBillingService {
 
     public RestApiResponse enableRecurringCharges(String myShopifyUrl, String name, Double price) {
         logger.info("enableRecurringCharges 2" + name);
-        return this.enableRecurringCharges(myShopifyUrl, name, price, shopifyConfigReader.getMax_charge(), "Amazing");
+        return this.enableRecurringCharges(myShopifyUrl, name, price, shopifyConfigReader.getMax_charge(), shopifyConfigReader.getTerms());
     }
 
 

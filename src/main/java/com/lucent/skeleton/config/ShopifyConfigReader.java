@@ -24,6 +24,8 @@ public class ShopifyConfigReader {
     private String price_rule_url;
     private String discount_url;
     private Double max_charge;
+    private String terms;
+    private String plan_name;
 
     private Boolean testBilling;
     private String token_url;
