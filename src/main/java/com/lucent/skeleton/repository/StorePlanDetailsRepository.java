@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.lucent.skeleton.entities.StorePlanDetails;
 
 @Repository
-public interface StorePlanDetailsRepository extends CrudRepository<StorePlanDetails, Integer> {
-    StorePlanDetails findByStoreId(Integer storeId);
+public interface StorePlanDetailsRepository extends CrudRepository<StorePlanDetails, Long> {
+    StorePlanDetails findByStoreId(Long storeId);
 }

@@ -35,7 +35,7 @@ public class StoreUtil {
         return storeDetails;
     }
 
-    public StoreDetails getByStoreId(Integer storeId) throws ShopifyException {
+    public StoreDetails getByStoreId(Long storeId) throws ShopifyException {
         StoreDetails storeDetails = storeDetailsRepository.findById(storeId).orElse(null);
         if (storeDetails == null) {
             logger.error("[StoreUtil] Invalid store name: {}", storeId);
@@ -44,11 +44,11 @@ public class StoreUtil {
         return storeDetails;
     }
 
-    public Map<Integer, StoreDetails> getStoreDetailsMap() {
+    public Map<Long, StoreDetails> getStoreDetailsMap() {
         return ((List<StoreDetails>) storeDetailsRepository.findAll()).stream().collect(Collectors.toConcurrentMap(StoreDetails::getId, c -> c));
     }
 
-    public List<StorePlanDetails> getStorePlanDetailsById(Set<Integer> ids) {
+    public List<StorePlanDetails> getStorePlanDetailsById(Set<Long> ids) {
         return (List<StorePlanDetails>) storePlanDetailsRepository.findAllById(ids);
     }
 }

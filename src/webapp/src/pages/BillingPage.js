@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Context } from '@shopify/app-bridge-react';
+import { TitleBar, Redirect } from '@shopify/app-bridge/actions';
 import {
     Page,
     Layout,
@@ -9,8 +11,10 @@ import {
     TextStyle,
     Badge,
 } from "@shopify/polaris";
+import Api from '../apis/Api';
 
 export default class BillingPage extends Component {
+    static contextType = Context;
     constructor() {
         super();
         this.state = {
@@ -18,7 +22,28 @@ export default class BillingPage extends Component {
             processing: false,
         };
     }
+    approveCharges = async () => {
+        const app = this.context;
+        let response = await Api.getBillingUrl();
+        if (response.status == 200) {
+            if (response.data.success) {
+                let resData = response.data.data;
+                console.log(response);
+                const redirect = Redirect.create(app);
+                redirect.dispatch(Redirect.Action.REMOTE, resData.confirmation_url);
+                return;
+            }
+        }
+    }
     render() {
+        const app = this.context;
+        window.app = app;
+        const titleBarOptions = {
+            title: 'Billing'
+        };
+
+        const myTitleBar = TitleBar.create(app, titleBarOptions);
+
         return (
             <Page
                 fullWidth="true"
@@ -42,8 +67,7 @@ export default class BillingPage extends Component {
                         >
                             <Card.Header title={
                                 <TextStyle variation="strong">Plan: $0.01/ Message
-                                &nbsp;
-								<Badge status="info"></Badge>
+                                
                                 </TextStyle>
                             }></Card.Header>
                             <Card.Section title="OTP Message">

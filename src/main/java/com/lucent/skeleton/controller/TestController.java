@@ -36,7 +36,7 @@ public class TestController {
 
     @GetMapping("/script")
     public void installScript() {
-        shopifyScriptTagService.installScriptTag(1);
+//        shopifyScriptTagService.installScriptTag(1);
     }
 
     public String updateDiscountString(StoreDetails storeDetails, String template){

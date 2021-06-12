@@ -5,22 +5,22 @@ import com.lucent.skeleton.entities.StoreScript;
 
 import java.util.Optional;
 
-public interface StoreScriptRepository extends CrudRepository<StoreScript, Integer> {
+public interface StoreScriptRepository extends CrudRepository<StoreScript, Long> {
 
 
     @Override
     Iterable<StoreScript> findAll();
 
     @Override
-    Optional<StoreScript> findById(Integer integer);
+    Optional<StoreScript> findById(Long integer);
 
-    StoreScript findByScriptId(Integer scriptId);
+    StoreScript findByScriptId(Long scriptId);
 
-    StoreScript findByStoreIdAndScriptId(Integer storeId, Integer scriptId);
+    StoreScript findByStoreIdAndScriptId(Long storeId, Long scriptId);
 
-    Iterable<StoreScript> findByStoreId(Integer storeId);
+    Iterable<StoreScript> findByStoreId(Long storeId);
 
-    StoreScript findByScriptIdAndVersion(Integer scriptId, String version);
+    StoreScript findByScriptIdAndVersion(Long scriptId, String version);
 
-    void deleteByScriptId(Integer scriptId);
+    void deleteByScriptId(Long scriptId);
 }

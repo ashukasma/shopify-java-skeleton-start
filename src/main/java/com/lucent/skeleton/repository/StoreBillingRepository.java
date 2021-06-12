@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.lucent.skeleton.entities.StoreBilling;
 
 @Repository
-public interface StoreBillingRepository extends CrudRepository<StoreBilling,Integer > {
+public interface StoreBillingRepository extends CrudRepository<StoreBilling,Long > {
     StoreBilling findByStoreId(Long storeId);
 
     StoreBilling findByStoreIdAndChargeId(Long storeId, Long chargeId);

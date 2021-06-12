@@ -10,6 +10,7 @@ import LoginFailed from './pages/LoginFailed';
 import Dashboard from './pages/Dashboard';
 import StoreInstall from './pages/StoreInstall';
 import BillingPage from './pages/BillingPage';
+import BillingSuccess from './pages/BillingSuccess';
 
 function Routes(props) {
     // debugger;
@@ -30,6 +31,11 @@ function Routes(props) {
                     path="/login-success"
                     component={LoginSuccess}
                 />
+                <Route
+                    skipLogin={true}
+                    path="/billing-success"
+                    component={BillingSuccess}
+                />
                 <Route path="/login-failed" component={LoginFailed} />
 
                 <AppLayoutRoute
@@ -44,6 +50,8 @@ function Routes(props) {
                     path="/billing"
                     component={BillingPage}
                 />
+
+
             </Switch>
 
         </>

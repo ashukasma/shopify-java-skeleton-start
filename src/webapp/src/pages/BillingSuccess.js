@@ -3,10 +3,8 @@ import { Layout, Page, SkeletonBodyText } from "@shopify/polaris";
 import { getShopOrigin, setShopOrigin, setStoreDetails } from '../utils/Utils';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { Context } from '@shopify/app-bridge-react';
-import Axios from 'axios';
-import { ApiUrl } from '../Constants';
 import Api from '../apis/Api';
-class LoginSuccess extends Component {
+class BillingSuccess extends Component {
     static contextType = Context;
     constructor() {
         super();
@@ -28,9 +26,8 @@ class LoginSuccess extends Component {
         }
         console.log(response);
         const redirect = Redirect.create(app);
-        redirect.dispatch(Redirect.Action.APP, "/login-failed");
+        redirect.dispatch(Redirect.Action.APP, "/billing");
     }
-
     autoRedirect = () => {
         // debugger;
         const app = this.context;
@@ -40,27 +37,8 @@ class LoginSuccess extends Component {
             this.getStoreData();
         }
     }
+
     componentDidMount() {
-        // debugger;
-        const params = window.location.pathname.split("/");
-        if (params.length > 2) {
-            let host = decodeURIComponent(params[2]);
-            if (host) {
-
-            } else {
-                host = getShopOrigin();
-            }
-            if (host) {
-                setShopOrigin(host);
-            }
-
-        }
-        else {
-            let host = getShopOrigin();
-            if (host) {
-                setShopOrigin(host);
-            }
-        }
         this.autoRedirect();
     }
 
@@ -77,4 +55,4 @@ class LoginSuccess extends Component {
     }
 }
 
-export default LoginSuccess;
+export default BillingSuccess;

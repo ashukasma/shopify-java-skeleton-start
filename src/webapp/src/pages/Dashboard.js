@@ -15,6 +15,7 @@ export default class Dashboard extends Component {
 
     render() {
         const app = this.context;
+        window.app = app;
         app.getState().then(state => console.log(state));
 
         const titleBarOptions = {

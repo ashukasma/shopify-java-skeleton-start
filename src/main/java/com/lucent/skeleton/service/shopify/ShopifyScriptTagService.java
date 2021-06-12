@@ -41,7 +41,7 @@ public class ShopifyScriptTagService {
     @Autowired
     ShopifyClient shopifyClient;
 
-    public Boolean installScriptTag(Integer shopId) {
+    public Boolean installScriptTag(Long shopId) {
         RestApiResponse restApiResponse = RestApiResponse.buildFail();
         Optional<StoreScript> storeScripts = storeScriptRepository.findById(shopId);
         StoreDetails storeDetails;
@@ -128,7 +128,7 @@ public class ShopifyScriptTagService {
         return false;
     }
 
-    public void removeScriptTagFromDB(Integer shopId) {
+    public void removeScriptTagFromDB(Long shopId) {
         Iterable<StoreScript> findByStoreId = storeScriptRepository.findByStoreId(shopId);
         findByStoreId.forEach(storeScript -> storeScriptRepository.deleteById(storeScript.getId()));
     }
@@ -143,7 +143,7 @@ public class ShopifyScriptTagService {
             script_tag_url = "https://" + myShopifyUrl + script_tag_url;
             shopifyResponse = shopifyClient.deleteDataFromShopify(script_tag_url, storeDetails.getAccessToken());
             if (shopifyResponse.getSuccess()) {
-                storeScriptRepository.deleteByScriptId(Integer.getInteger(scriptTagId));
+                storeScriptRepository.deleteByScriptId(Long.getLong(scriptTagId));
             }
         } catch (Exception e) {
             e.printStackTrace();

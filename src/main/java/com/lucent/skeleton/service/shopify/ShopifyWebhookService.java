@@ -37,7 +37,7 @@ public class ShopifyWebhookService {
     @Autowired
     StoreBillingRepository storeBillingRepository;
 
-    public boolean createWebhooks(Integer storeId){
+    public boolean createWebhooks(Long storeId){
         RestApiResponse restApiResponse = RestApiResponse.buildFail();
 
         StoreDetails storeDetails;

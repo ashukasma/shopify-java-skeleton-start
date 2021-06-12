@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 import com.lucent.skeleton.clients.dto.ShopifyRecurBillingDTO;
@@ -80,11 +81,11 @@ public class ShopifyBillingService {
         }
     }
 
-    public RestApiResponse enableRecurringCharges(Long id) {
+    public RestApiResponse enableRecurringCharges(String myShopifyUrl) {
         try {
             System.out.println("enableRecurringCharges");
-            logger.info("enableRecurringCharges 1" + id);
-            return this.enableRecurringCharges(id, "Starter Plan", 0.0, shopifyConfigReader.getMax_charge(), "Charges ($0.01/ Message) will be based on each message (160 characters) sent. ");
+            logger.info("enableRecurringCharges 1" + myShopifyUrl);
+            return this.enableRecurringCharges(myShopifyUrl, "Starter Plan", 0.0, shopifyConfigReader.getMax_charge(), "Charges ($0.01/ Message) will be based on each message (160 characters) sent. ");
         }
         catch(Exception ex){
             System.out.println(ex);
@@ -93,13 +94,13 @@ public class ShopifyBillingService {
         }
     }
 
-    public RestApiResponse enableRecurringCharges(Long id, String name, Double price) {
+    public RestApiResponse enableRecurringCharges(String myShopifyUrl, String name, Double price) {
         logger.info("enableRecurringCharges 2" + name);
-        return this.enableRecurringCharges(id, name, price, shopifyConfigReader.getMax_charge(), "Amazing");
+        return this.enableRecurringCharges(myShopifyUrl, name, price, shopifyConfigReader.getMax_charge(), "Amazing");
     }
 
 
-    public RestApiResponse enableRecurringCharges(Long id, String name, Double price, Double capAmount, String terms) {
+    public RestApiResponse enableRecurringCharges(String myShopifyUrl, String name, Double price, Double capAmount, String terms) {
         System.out.println("enableRecurringCharges");
         logger.info("enableRecurringCharges 3" + name);
         String recurring_url = shopifyConfigReader.getRecurring_url();
@@ -109,7 +110,7 @@ public class ShopifyBillingService {
         boolean testBilling = shopifyConfigReader.getTestBilling();
 
         StoreDetails storeDetails;
-        storeDetails = storeDetailsRepository.findById(id.intValue()).orElse(null);
+        storeDetails = storeDetailsRepository.findByMyShopfiyUrl(myShopifyUrl);
         if (storeDetails == null) {
             return RestApiResponse.buildFail("No store is associated");
         }
@@ -123,7 +124,7 @@ public class ShopifyBillingService {
         }
 
         RestApiResponse restApiResponse = RestApiResponse.buildFail();
-        String myShopifyUrl = storeDetails.getMyShopfiyUrl();
+        Long storeId = storeDetails.getId();
         recurring_url = recurring_url.replace("{version}", shopify_api_version);
         String url = "https://" + myShopifyUrl + recurring_url;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -139,14 +140,14 @@ public class ShopifyBillingService {
                 if(storeBilling == null){
                     storeBilling = new StoreBilling();
                 }
-                storeBilling.setStoreId(id);
+                storeBilling.setStoreId(storeId);
                 String responseString = shopifyResponse.getResponse();
                 ShopBillingMasterDTO shopBillingMasterDTO = new ObjectMapper().readValue(responseString, ShopBillingMasterDTO.class);
                 logger.info("storeDetailsDTO Detail {}", shopBillingMasterDTO.toString());
                 BeanUtils.copyProperties(shopBillingMasterDTO.getShopBillingDTO(), storeBilling);
                 storeBillingRepository.save(storeBilling);
 
-                List<StorePlanDetails> storePlanDetailsList = storePlanRepository.findByStoreId(storeDetails.getId());
+                List<StorePlanDetails> storePlanDetailsList = storePlanRepository.findByStoreId(storeId);
                 if (storePlanDetailsList.size() == 1) {
                     StorePlanDetails storePlanDetails = storePlanDetailsList.get(0);
                     storePlanDetails.setMaxCharge(capAmount);
@@ -166,68 +167,4 @@ public class ShopifyBillingService {
             return RestApiResponse.buildFail(e.getMessage());
         }
     }
-
-//    public RestApiResponse createUsageCharge(MessageDeliveryStatus messageDeliveryStatus, Integer storeId, Double amount, String message){
-//        String usage_charge_url = shopifyConfigReader.getUsage_charge_url();
-//        String api_version = shopifyConfigReader.getApi_version();
-//
-//        StoreDetails storeDetails;
-//        storeDetails = storeDetailsRepository.findById(storeId).orElse(null);
-//        if (storeDetails == null) {
-//            return RestApiResponse.buildFail("No store is associated");
-//        }
-//
-//        StoreBilling storeBilling = storeBillingRepository.findByStoreId(storeId.longValue());
-//        if(storeBilling ==  null){
-//            return RestApiResponse.buildFail("No store is associated");
-//        }
-//        Long chargeId = storeBilling.getChargeId();
-//
-//
-//        RestApiResponse restApiResponse = RestApiResponse.buildFail();
-//        String myShopifyUrl = storeDetails.getMyShopfiyUrl();
-//        usage_charge_url = usage_charge_url.replace("{version}", api_version);
-//        usage_charge_url = usage_charge_url.replace("{recurring_application_charge_id}", chargeId.toString());
-//        String url = "https://" + myShopifyUrl + usage_charge_url;
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        try{
-//            ShopifyUsageChargePayload shopifyUsageChargePayload = new ShopifyUsageChargePayload(message, amount);
-//            ShopifyUsageChargeMasterPayload shopifyUsageChargeMasterPayload = new ShopifyUsageChargeMasterPayload(shopifyUsageChargePayload);
-//            String requestBody = objectMapper.writeValueAsString(shopifyUsageChargeMasterPayload);
-//            ShopifyResponse shopifyResponse = shopifyClient.postDataToShopify(url,storeDetails.getAccessToken(),requestBody);
-//            if(shopifyResponse.getSuccess()){
-//                String responseString = shopifyResponse.getResponse();
-//                System.out.println("responseString"+responseString);
-//                ShopifyUsageChargeMasterDTO shopifyUsageChargeMasterDTO =  new ObjectMapper().readValue(responseString,ShopifyUsageChargeMasterDTO.class);
-//                Date createdAt = shopifyUsageChargeMasterDTO.getShopifyUsageChargeDTO().getCreated_at();
-//                LocalDate localDate = createdAt.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//                int month = localDate.getMonthValue();
-//                int year = localDate.getYear();
-//                MessageDeliveryTransaction messageDeliveryTransaction = MessageDeliveryTransaction.build(
-//                        messageDeliveryStatus,
-//                        amount,
-//                        shopifyUsageChargeMasterDTO.getShopifyUsageChargeDTO().getId().longValue(),
-//                        month,
-//                        year
-//                        );
-//                messageDeliveryTransaction = messageDeliveryTransactionRespository.save(messageDeliveryTransaction);
-//
-//                List<StorePlanDetails> storePlanDetailsList = storePlanRepository.findByStoreId(storeDetails.getId());
-//                if(storePlanDetailsList.size() == 1){
-//                    StorePlanDetails storePlanDetails =  storePlanDetailsList.get(0);
-//                    storePlanDetails.setCurrentCharge(shopifyUsageChargeMasterDTO.getShopifyUsageChargeDTO().getBalance_used());
-//                    storePlanRepository.save(storePlanDetails);
-//                }
-//                return RestApiResponse.buildSuccess(messageDeliveryTransaction);
-//
-//            }
-//            else{
-//                return RestApiResponse.buildFail(shopifyResponse.getResponse());
-//            }
-//        }
-//        catch (Exception e){
-//            System.out.println(e);
-//            return RestApiResponse.buildFail(e.getMessage());
-//        }
-//    }
 }

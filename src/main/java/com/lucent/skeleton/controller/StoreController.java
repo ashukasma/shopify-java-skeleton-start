@@ -22,16 +22,11 @@ public class StoreController {
     @Autowired
     StoreService storeService;
 
-    @RequestMapping("/billing/{store_id}")
+    @RequestMapping("/billing")
     @ResponseBody
-    public RestApiResponse shopifyBilling(@PathVariable Long store_id) {
-        return shopifyBillingService.enableRecurringCharges(store_id);
-    }
-
-    @RequestMapping("/amountbilling/{store_id}/{max_charge}")
-    @ResponseBody
-    public RestApiResponse shopifyBillingWithAmount(@PathVariable Long store_id, @PathVariable double max_charge) {
-        return shopifyBillingService.enableRecurringCharges(store_id, "New Updated Plan", max_charge);
+    public RestApiResponse shopifyBilling(Principal principal) {
+        String myShopifyUrl = principal.getName();
+        return shopifyBillingService.enableRecurringCharges(myShopifyUrl);
     }
 
     @RequestMapping("/store")
@@ -49,7 +44,7 @@ public class StoreController {
 
     @RequestMapping("/settings/tour/update/{storeId}/{tourId}")
     @ResponseBody
-    public RestApiResponse updateIntroTour(@PathVariable Integer storeId, @PathVariable Integer tourId) {
+    public RestApiResponse updateIntroTour(@PathVariable Long storeId, @PathVariable Integer tourId) {
         return storeService.updateTour(storeId, tourId);
     }
 }

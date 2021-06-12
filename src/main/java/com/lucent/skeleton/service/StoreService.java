@@ -207,7 +207,7 @@ public class StoreService {
         return RestApiResponse.buildSuccess();
     }
 
-    public RestApiResponse updateTour(Integer storeId, Integer tourId) {
+    public RestApiResponse updateTour(Long storeId, Integer tourId) {
         StoreDetails storeDetails = storeDetailsRepository.findById(storeId).orElse(null);
         if(storeDetails == null){
             return RestApiResponse.buildFail("Store is not available");

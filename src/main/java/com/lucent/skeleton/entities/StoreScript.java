@@ -13,13 +13,13 @@ public class StoreScript {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "store_id")
-    private Integer storeId;
+    private Long storeId;
 
     @Column(name = "script_id")
-    private Integer scriptId;
+    private Long scriptId;
 
     @Column(name = "script_tag_id")
     private String scriptTagId;
